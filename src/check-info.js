@@ -35,7 +35,7 @@ const getInfo = async (username, callback) => {
     "https://api2.splinterlands.com/battle/history2?player=" +
       username.toLowerCase()
   );
-  console.log(process.argv[3] == "backup");
+  //console.log(process.argv[3] == "backup");
   if (process.argv[3] == "backup") {
     await Promise.all([req1, req2, req3, req4, req5])
       .then((data) => {
@@ -153,7 +153,7 @@ const getDetails = (data4) => {
     power: data4.data.collection_power,
   };
 };
-const checkInfo = async () => {
+const checkInfo = async (userList) => {
   const table = new Table({
     style: { head: ["green"] },
     head: [
@@ -176,7 +176,7 @@ const checkInfo = async () => {
     ],
   });
   let result = [];
-  for (const username of USER_NAME_LIST) {
+  for (const username of userList) {
     //console.log("Getting data of user: %s", username);
     let battleResult;
     let balance;
@@ -293,7 +293,7 @@ const checkInfo = async () => {
   console.log("Total Power: %d", totalPower);
 };
 
-export const main = async () => {
-  const result = await checkInfo();
+export const main = async (userList) => {
+  const result = await checkInfo(userList);
   return result;
 };
