@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./App.css";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { main } from "./check-info";
 //import saveData from "./save";
 import Table from "./table";
-
-function Home({ mongoContext: { client, user } }) {
+import * as Realm from "realm-web";
+const app = new Realm.App({ id: "application-0-tvtkt" });
+function Home(MongoContext2) {
   const [data, setData] = useState([]);
   const [users, setUsers] = useState("");
   const [totalDEC, setDEC] = useState(0);
@@ -39,11 +40,14 @@ function Home({ mongoContext: { client, user } }) {
     return result;
   };
   const getUsersList = async () => {
+    const mongo = await app.logIn(Realm.Credentials.anonymous());
+    const client = app.currentUser.mongoClient("mongodb-atlas");
     const users = client.db("splinterland").collection("user");
     const rawList = await users.find();
     let userList2 = rawList.map((user) => {
       return user.name;
     });
+
     return userList2;
   };
   const totalDecCaculator = async (raw) => {
@@ -142,7 +146,7 @@ function Home({ mongoContext: { client, user } }) {
     e.preventDefault();
     // saveData.uploadUser(users);
     const toObject = { name: users };
-    const users = client.db("splinterland").collection("user");
+    const users = MongoContext2.client.db("splinterland").collection("user");
     users.insertMany(toObject);
     setAddNew(true);
   };

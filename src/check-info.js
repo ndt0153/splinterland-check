@@ -1,7 +1,4 @@
 import date from "date-and-time";
-const USER_NAME_LIST = ["toshihikosong", "kiokizz", "ottermaker"];
-const fs = require("fs");
-const sleep = require("util").promisify(setTimeout);
 const ta = require("time-ago");
 const axios = require("axios");
 
