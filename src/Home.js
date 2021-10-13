@@ -7,14 +7,13 @@ import { main } from "./check-info";
 import Table from "./table";
 import * as Realm from "realm-web";
 const app = new Realm.App({ id: "application-0-tvtkt" });
-function Home(MongoContext2) {
+function Home() {
   const [data, setData] = useState([]);
   const [users, setUsers] = useState("");
   const [totalDEC, setDEC] = useState(0);
   const [totalPower, setPower] = useState(0);
   const [totalAcc, setAcc] = useState(0);
   const [DECPrice, setDECPrice] = useState(0);
-  const [addNew, setAddNew] = useState(false);
   const getData2 = async (raw) => {
     const result = raw.map(function (ele, index) {
       return {
@@ -145,10 +144,6 @@ function Home(MongoContext2) {
   const handleSubmit = (e) => {
     e.preventDefault();
     // saveData.uploadUser(users);
-    const toObject = { name: users };
-    const users = MongoContext2.client.db("splinterland").collection("user");
-    users.insertMany(toObject);
-    setAddNew(true);
   };
   //const data2 = React.useMemo(() => getData2(), []);
   useEffect(() => {

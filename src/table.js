@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTable, usePagination } from "react-table";
 import { Button, PageButton } from "./tool/Button";
 import { classNames } from "./tool/Utils";
@@ -8,7 +8,7 @@ import {
   ChevronRightIcon,
   ChevronDoubleRightIcon,
 } from "@heroicons/react/solid";
-function Table({ columns, data }) {
+function Table({ columns, data, pageCount: controlledPageCount, fetchData }) {
   const {
     canPreviousPage,
     canNextPage,
@@ -28,9 +28,16 @@ function Table({ columns, data }) {
     {
       columns,
       data,
+      initialState: { pageIndex: 0 }, // Pass our hoisted table state
+      manualPagination: true,
+      pageCount: controlledPageCount,
     },
     usePagination
   );
+  useEffect(() => {
+    console.log(pageIndex);
+    fetchData(pageIndex);
+  }, [pageIndex]);
   return (
     <>
       <div className="mt-4 flex flex-col">
