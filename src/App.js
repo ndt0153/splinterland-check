@@ -114,7 +114,7 @@ function App() {
     if (e.target.value === "all") {
       setData(temp);
     } else {
-      const newData = data.filter(function (el) {
+      const newData = temp.filter(function (el) {
         return el.group === e.target.value;
       });
       setData(newData);
