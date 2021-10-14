@@ -35,7 +35,6 @@ function Table({ columns, data, pageCount: controlledPageCount, fetchData }) {
     usePagination
   );
   useEffect(() => {
-    console.log(pageIndex);
     fetchData(pageIndex);
   }, [pageIndex]);
   return (
