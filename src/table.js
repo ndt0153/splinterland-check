@@ -88,7 +88,9 @@ function Table({ columns, data, pageCount: controlledPageCount, fetchData }) {
                                   {cell.render("Cell")}
                                 </div>
                               ) : (
-                                cell.render("Cell")
+                                <div className="text-sm text-gray-500">
+                                  {cell.render("Cell")}
+                                </div>
                               )}
                             </td>
                           );
