@@ -110,24 +110,28 @@ function App() {
     });
     // saveData.uploadUser(users);
   };
-  const handleSelect = (e) => {
+  const handleSelect = async (e) => {
     if (e.target.value === "all") {
       setData(temp);
+      setFilter(e.target.value);
     } else {
       const newData = temp.filter(function (el) {
         return el.group === e.target.value;
       });
+      setFilter(e.target.value);
       setData(newData);
     }
   };
   const fetchData = async () => {
     const userList = await axios.get("http://localhost:2000/b");
+    const userGroup = await axios.get("http://localhost:2000/group");
     const totalDEC = await axios.get("http://localhost:2000/totalDEC");
     const totalPower = await axios.get("http://localhost:2000/totalPower");
-    const groupRaw = await axios.get("http://localhost:2000/group");
+    const groupRaw = await axios.get("http://localhost:2000/group-name");
     getDECPrice();
     setGroup(groupRaw.data);
-    setData(userList.data.products);
+    setFilter(group);
+    setData(userGroup.data);
     setTemp(userList.data.products);
     setPage(userList.data.page);
     setAcc(userList.data.count);
@@ -159,15 +163,13 @@ function App() {
         </div>
         <div className="flex flex-row">
           <div>
-            <select onChange={handleSelect}>
-              <option value="all" selected>
-                All
-              </option>
+            <select value={filter} onChange={handleSelect}>
               {group
                 ? group.map((item) => (
                     <option value={item.name}>{item.name}</option>
                   ))
                 : ""}
+              <option value="all">All</option>
             </select>
           </div>
           <div>
