@@ -8,7 +8,9 @@ import { main } from "./check-info";
 import Table from "./table";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+
 function App() {
+  const url = "http://localhost:2000";
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [temp, setTemp] = useState([]);
@@ -106,7 +108,7 @@ function App() {
       name: listNameCreate,
       array: arrayAcc,
     };
-    axios.post("http://localhost:2000/group", submit).then((response) => {
+    axios.post(`${url}/group`, submit).then((response) => {
       window.location.reload(false);
     });
     // saveData.uploadUser(users);
@@ -136,7 +138,7 @@ function App() {
     const users = client.db("splinterland").collection("user");
     const rawList = await users.find(); */
 
-    let rawList = await axios.get(`http://localhost:2000/group?name=${filter}`);
+    let rawList = await axios.get(`${url}/group?name=${filter}`);
     let userList2 = rawList.data.map((user) => {
       return user.username;
     });
@@ -174,11 +176,11 @@ function App() {
     return results;
   };
   const fetchData = async () => {
-    const userList = await axios.get("http://localhost:2000/b");
-    const userGroup = await axios.get("http://localhost:2000/group");
-    const totalDEC = await axios.get("http://localhost:2000/totalDEC");
-    const totalPower = await axios.get("http://localhost:2000/totalPower");
-    const groupRaw = await axios.get("http://localhost:2000/group-name");
+    const userList = await axios.get(`${url}/b`);
+    const userGroup = await axios.get(`${url}/group`);
+    const totalDEC = await axios.get(`${url}/totalDEC`);
+    const totalPower = await axios.get(`${url}/totalPower`);
+    const groupRaw = await axios.get(`${url}/group-name`);
 
     getDECPrice();
     setGroup(groupRaw.data);
