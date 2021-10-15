@@ -185,7 +185,7 @@ function App() {
     getDECPrice();
     setGroup(groupRaw.data);
     setFilter(group);
-    // setData(userGroup.data);
+    //setData(userGroup.data);
     setTemp(userList.data.products);
     setPage(userList.data.page);
     setAcc(userList.data.count);
