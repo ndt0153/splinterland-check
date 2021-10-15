@@ -9,6 +9,7 @@ import Table from "./table";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 function App() {
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [temp, setTemp] = useState([]);
   const [pageCount, setPage] = useState(0);
@@ -115,12 +116,62 @@ function App() {
       setData(temp);
       setFilter(e.target.value);
     } else {
-      const newData = temp.filter(function (el) {
+      console.log(e.target.value);
+      setLoading(true);
+      setFilter(e.target.value);
+      let data = await getDataFromClient(e.target.value);
+      setData(data);
+
+      setLoading(false);
+      /* const newData = temp.filter(function (el) {
         return el.group === e.target.value;
       });
-      setFilter(e.target.value);
-      setData(newData);
+      
+      setData(newData); */
     }
+  };
+  const getUsersList = async (filter) => {
+    /* const mongo = await app.logIn(Realm.Credentials.anonymous());
+    const client = app.currentUser.mongoClient("mongodb-atlas");
+    const users = client.db("splinterland").collection("user");
+    const rawList = await users.find(); */
+
+    let rawList = await axios.get(`http://localhost:2000/group?name=${filter}`);
+    let userList2 = rawList.data.map((user) => {
+      return user.username;
+    });
+
+    return userList2;
+  };
+  const getData2 = async (raw) => {
+    const result = raw.map(function (ele, index) {
+      return {
+        id: index + 1,
+        username: ele[0],
+        dec: ele[1],
+        erc: ele[2],
+        rating: ele[3],
+        power: ele[4],
+        win: ele[5],
+        lose: ele[6],
+        draw: ele[7],
+        total: ele[8],
+        winrate: ele[9],
+        quest: ele[10],
+        lastgame: ele[11],
+        lastdec: ele[12],
+        lastclaim: ele[13],
+        afk: ele[14],
+      };
+    });
+
+    return result;
+  };
+  const getDataFromClient = async (filter) => {
+    const groupUser = await getUsersList(filter);
+    const tableData = await main(groupUser);
+    const results = await getData2(tableData);
+    return results;
   };
   const fetchData = async () => {
     const userList = await axios.get("http://localhost:2000/b");
@@ -128,10 +179,11 @@ function App() {
     const totalDEC = await axios.get("http://localhost:2000/totalDEC");
     const totalPower = await axios.get("http://localhost:2000/totalPower");
     const groupRaw = await axios.get("http://localhost:2000/group-name");
+
     getDECPrice();
     setGroup(groupRaw.data);
     setFilter(group);
-    setData(userGroup.data);
+    // setData(userGroup.data);
     setTemp(userList.data.products);
     setPage(userList.data.page);
     setAcc(userList.data.count);
@@ -223,6 +275,15 @@ function App() {
               )}
             </Popup>
           </div>
+        </div>
+        <div>
+          {loading ? (
+            <p className="text-base px-8 text-left block text-red-500">
+              Đang lấy dữ liệu mới nhất, vui lòng chờ trong giây lát
+            </p>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <Table
