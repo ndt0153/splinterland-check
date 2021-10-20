@@ -281,8 +281,7 @@ function App() {
             <Popup
               trigger={
                 <button className="button px-10 py-2 bg-blue-500 hover:bg-red-400 text-white rounded-lg ml-5">
-                  {" "}
-                  Tạo List{" "}
+                  Tạo List
                 </button>
               }
               modal
@@ -332,8 +331,7 @@ function App() {
             <Popup
               trigger={
                 <button className="button px-10 py-2 bg-red-500 hover:bg-blue-400 text-white rounded-lg ml-5">
-                  {" "}
-                  Xóa List{" "}
+                  Xóa List
                 </button>
               }
               modal
@@ -385,8 +383,7 @@ function App() {
             <Popup
               trigger={
                 <button className="button px-10 py-2 bg-blue-500 hover:bg-red-400 text-white rounded-lg ml-5">
-                  {" "}
-                  Tạo List{" "}
+                  Thêm User
                 </button>
               }
               modal
