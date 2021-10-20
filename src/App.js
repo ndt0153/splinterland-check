@@ -23,6 +23,8 @@ function App() {
   const [filter, setFilter] = useState("");
   const [listNameCreate, setCreateListName] = useState("");
   const [listAccCreate, setCreateAcc] = useState("");
+  const [checked, setChecked] = useState([]);
+  const [newAcc, setNewAcc] = useState([]);
   const option = [{ value: "nhom1", label: "Nhóm 1" }];
   const getDECPrice = async () => {
     let result = await axios.get(
@@ -101,8 +103,19 @@ function App() {
     ],
     []
   );
+  const handleNewAccSubmit = (e) => {
+    e.preventDefault();
+
+    const arrayAcc = newAcc.split("\n");
+
+    axios.post(`${url}/c`, arrayAcc).then((response) => {
+      window.location.reload(false);
+    });
+    // saveData.uploadUser(users);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const arrayAcc = listAccCreate.split("\n");
     let submit = {
       name: listNameCreate,
@@ -112,6 +125,33 @@ function App() {
       window.location.reload(false);
     });
     // saveData.uploadUser(users);
+  };
+  const handleDeleteSubmit = (e) => {
+    e.preventDefault();
+    let myArray = checked;
+
+    axios.post(`${url}/delete-group`, checked).then((res) => {
+      window.location.reload(false);
+    });
+    /* const arrayAcc = listAccCreate.split("\n");
+    let submit = {
+      name: listNameCreate,
+      array: arrayAcc,
+    };
+    axios.post(`${url}/group`, submit).then((response) => {
+      window.location.reload(false);
+    }); */
+    // saveData.uploadUser(users);
+  };
+  const onChangeCheckbox = (id) => {
+    let arr = checked;
+    if (id.target.checked) {
+      arr.push(id.target.value);
+    } else {
+      console.log(id.target.value);
+      arr = arr.filter((e) => e !== id.target.value);
+    }
+    setChecked(arr);
   };
   const handleSelect = async (e) => {
     if (e.target.value === "all") {
@@ -137,7 +177,6 @@ function App() {
     const client = app.currentUser.mongoClient("mongodb-atlas");
     const users = client.db("splinterland").collection("user");
     const rawList = await users.find(); */
-
     let rawList = await axios.get(`${url}/group?name=${filter}`);
     let userList2 = rawList.data.map((user) => {
       return user.username;
@@ -169,10 +208,22 @@ function App() {
 
     return result;
   };
+  const totalFromlist = async (data) => {
+    let total = 0;
+
+    data.forEach((data2, index) => {
+      total += parseInt(data2[1]);
+    });
+
+    return total;
+  };
   const getDataFromClient = async (filter) => {
     const groupUser = await getUsersList(filter);
     const tableData = await main(groupUser);
+    const totalDec = await totalFromlist(tableData);
     const results = await getData2(tableData);
+    setDEC(totalDec);
+
     return results;
   };
   const fetchData = async () => {
@@ -255,7 +306,7 @@ function App() {
                           onChange={(e) => setCreateListName(e.target.value)}
                         />
                       </label>
-                      <label className="block text-base text-gray-800 py-2">
+                      <label className="block text-2xl text-gray-800 py-2">
                         Danh sách account:
                         <textarea
                           type="textarea"
@@ -266,7 +317,104 @@ function App() {
                         />
                       </label>
                       <input
+                        className="block text-base text-white py-3 bg-green-500 text-white"
+                        type="submit"
+                        value="Tạo danh sách"
+                      />
+                    </form>
+                  </div>
+                  <div className="actions"></div>
+                </div>
+              )}
+            </Popup>
+          </div>
+          <div>
+            <Popup
+              trigger={
+                <button className="button px-10 py-2 bg-red-500 hover:bg-blue-400 text-white rounded-lg ml-5">
+                  {" "}
+                  Xóa List{" "}
+                </button>
+              }
+              modal
+              nested
+            >
+              {(close) => (
+                <div className="modal">
+                  <button className="close" onClick={close}>
+                    &times;
+                  </button>
+                  <div className="header">Xóa group </div>
+                  <div className="content">
+                    <form
+                      className="flex flex-col"
+                      onSubmit={handleDeleteSubmit}
+                    >
+                      <label className="block text-2xl text-gray-800 py-2">
+                        Danh sách account:
+                        {group
+                          ? group.map((item) => (
+                              <div key={item._id} className="">
+                                <input
+                                  className="form-checkbox p-2 mr-3 rounded text-pink-500 appearance-none checked:bg-blue-600 checked:border-transparent"
+                                  type="checkbox"
+                                  onChange={onChangeCheckbox}
+                                  value={item.name}
+                                  name={item.name}
+                                />
+                                <label className="h-60 text-base text-gray-800">
+                                  {item.name}
+                                </label>
+                              </div>
+                            ))
+                          : ""}
+                      </label>
+                      <input
                         className="block text-base text-gray-800 py-3 bg-green-500 text-white"
+                        type="submit"
+                        value="Xóa danh sách"
+                      />
+                    </form>
+                  </div>
+                  <div className="actions"></div>
+                </div>
+              )}
+            </Popup>
+          </div>
+          <div>
+            <Popup
+              trigger={
+                <button className="button px-10 py-2 bg-blue-500 hover:bg-red-400 text-white rounded-lg ml-5">
+                  {" "}
+                  Tạo List{" "}
+                </button>
+              }
+              modal
+              nested
+            >
+              {(close) => (
+                <div className="modal">
+                  <button className="close" onClick={close}>
+                    &times;
+                  </button>
+                  <div className="header">Thêm User </div>
+                  <div className="content">
+                    <form
+                      className="flex flex-col"
+                      onSubmit={handleNewAccSubmit}
+                    >
+                      <label className="block text-2xl text-gray-800 py-2">
+                        Danh sách account:
+                        <textarea
+                          type="textarea"
+                          className="block w-full h-60 text-sm text-gray-800 mb-6 border-0 rounded-lg bg-gray-200 "
+                          required
+                          value={newAcc}
+                          onChange={(e) => setNewAcc(e.target.value)}
+                        />
+                      </label>
+                      <input
+                        className="block text-base text-white py-3 bg-green-500 text-white"
                         type="submit"
                         value="Tạo danh sách"
                       />
@@ -278,7 +426,7 @@ function App() {
             </Popup>
           </div>
         </div>
-        <div>
+        <div className="flex ml-40">
           {loading ? (
             <p className="text-base px-8 text-left block text-red-500">
               Đang lấy dữ liệu mới nhất, vui lòng chờ trong giây lát

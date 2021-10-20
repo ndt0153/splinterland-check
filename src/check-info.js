@@ -174,43 +174,47 @@ const checkInfo = async (userList) => {
   });
   let result = [];
   for (const username of userList) {
-    //console.log("Getting data of user: %s", username);
-    let battleResult;
-    let balance;
-    let details;
-    let quest;
-    let reward;
-    let lastestQuest;
-    let afk;
-    await getInfo(username, (result) => {
-      battleResult = getBattlesResult(result[0], username);
-      balance = getBalance(result[2]);
-      details = getDetails(result[4]);
-      quest = getQuest(result[3]);
-      reward = getRewardsQuestDEC(result[1]);
-      afk = getAfkGame(result[6]);
-      if (process.argv[3] == "backup") {
-        lastestQuest = "Ignore";
-      } else {
-        lastestQuest = getLastestClaimQuestTime(result[5]);
-      }
+    await new Promise((resolve, reject) => {
+      setTimeout(async () => {
+        //console.log("Getting data of user: %s", username);
+        let battleResult;
+        let balance;
+        let details;
+        let quest;
+        let reward;
+        let lastestQuest;
+        let afk;
+        await getInfo(username, (result) => {
+          battleResult = getBattlesResult(result[0], username);
+          balance = getBalance(result[2]);
+          details = getDetails(result[4]);
+          quest = getQuest(result[3]);
+          reward = getRewardsQuestDEC(result[1]);
+          afk = getAfkGame(result[6]);
+          if (process.argv[3] == "backup") {
+            lastestQuest = "Ignore";
+          } else {
+            lastestQuest = getLastestClaimQuestTime(result[5]);
+          }
+        });
+
+        let data = {
+          ...{
+            username: username,
+            balance: balance,
+            quest: quest,
+          },
+          ...details,
+          ...battleResult,
+          ...reward,
+          lastestQuest,
+          afk,
+        };
+        result.push(data);
+        resolve();
+        // console.log("Done: %s", username);
+      }, 500);
     });
-
-    let data = {
-      ...{
-        username: username,
-        balance: balance,
-        quest: quest,
-      },
-      ...details,
-      ...battleResult,
-      ...reward,
-      lastestQuest,
-      afk,
-    };
-    result.push(data);
-
-    // console.log("Done: %s", username);
   }
   let filter = process.argv[2];
   let i = 9;
