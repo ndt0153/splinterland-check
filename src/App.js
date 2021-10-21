@@ -60,45 +60,15 @@ function App() {
         Header: "Power",
         accessor: "power",
       },
-      {
-        Header: "Win",
-        accessor: "win",
-      },
-      {
-        Header: "Lose",
-        accessor: "lose",
-      },
-      {
-        Header: "Draw",
-        accessor: "draw",
-      },
-      {
-        Header: "Total",
-        accessor: "total",
-      },
+
       {
         Header: "Win Rate",
         accessor: "winrate",
       },
-      {
-        Header: "Quest",
-        accessor: "quest",
-      },
+
       {
         Header: "Lastest game",
         accessor: "lastgame",
-      },
-      {
-        Header: "Lastest DEC quest",
-        accessor: "lastdec",
-      },
-      {
-        Header: "Lastest claim quest",
-        accessor: "lastclaim",
-      },
-      {
-        Header: "AFK",
-        accessor: "afk",
       },
     ],
     []
@@ -193,16 +163,8 @@ function App() {
         erc: ele[2],
         rating: ele[3],
         power: ele[4],
-        win: ele[5],
-        lose: ele[6],
-        draw: ele[7],
-        total: ele[8],
         winrate: ele[9],
-        quest: ele[10],
         lastgame: ele[11],
-        lastdec: ele[12],
-        lastclaim: ele[13],
-        afk: ele[14],
       };
     });
 
