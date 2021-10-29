@@ -25,6 +25,7 @@ function App() {
   const [listAccCreate, setCreateAcc] = useState("");
   const [checked, setChecked] = useState([]);
   const [newAcc, setNewAcc] = useState([]);
+  const [tempAcc, setTempAcc] = useState("");
   const option = [{ value: "nhom1", label: "Nhóm 1" }];
   const getDECPrice = async () => {
     let result = await axios.get(
@@ -127,6 +128,10 @@ function App() {
     if (e.target.value === "all") {
       setData(temp);
       setFilter(e.target.value);
+    } else if (e.target.value === "Xin chon list") {
+      setAcc(tempAcc);
+      setData([]);
+      setFilter(e.target.value);
     } else {
       console.log(e.target.value);
       setLoading(true);
@@ -172,11 +177,12 @@ function App() {
   };
   const totalFromlist = async (data) => {
     let total = 0;
-
+    let countList = 0;
     data.forEach((data2, index) => {
       total += parseInt(data2[1]);
+      countList++;
     });
-
+    setAcc(countList);
     return total;
   };
   const getDataFromClient = async (filter) => {
@@ -201,6 +207,7 @@ function App() {
     //setData(userGroup.data);
     setTemp(userList.data.products);
     setPage(userList.data.page);
+    setTempAcc(userList.data.count);
     setAcc(userList.data.count);
     setDEC(totalDEC.data.total);
     setPower(totalPower.data.total);
