@@ -184,8 +184,8 @@ const checkInfo = async (userList) => {
     let lastestQuest;
     let afk;
     await getInfo(username, (result) => {
-      balance = getBalance(result[1]);
-      details = getDetails(result[2]);
+      balance = getBalance(result[0]);
+      details = getDetails(result[1]);
     });
 
     let data = {
