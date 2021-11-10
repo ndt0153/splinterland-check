@@ -5,10 +5,10 @@ const axios = require("axios");
 var Table = require("cli-table");
 
 const getInfo = async (username, callback) => {
-  const req1 = axios.get(
+  /* const req1 = axios.get(
     "http://api.splinterlands.com/battle/history?player=" +
       username.toLowerCase()
-  );
+  ); */
   /* const req2 = axios.get(
     "https://api2.splinterlands.com/players/balance_history?token_type=DEC&offset=0&limit=500&v=1630134828010&token=7O6I59GSSG&username=" +
       username
@@ -34,7 +34,7 @@ const getInfo = async (username, callback) => {
   ); */
   //console.log(process.argv[3] == "backup");
   if (process.argv[3] == "backup") {
-    await Promise.all([req1, , req3, , req5])
+    await Promise.all([req3, , req5])
       .then((data) => {
         callback(data);
       })
@@ -43,7 +43,7 @@ const getInfo = async (username, callback) => {
       });
     return;
   } else {
-    await Promise.all([req1, req3, req5])
+    await Promise.all([req3, req5])
       .then((data) => {
         callback(data);
       })
@@ -82,7 +82,7 @@ function getRewardsQuestDEC(data1) {
   }
   return {};
 }
-const getBattlesResult = (data0, username) => {
+/* const getBattlesResult = (data0, username) => {
   const today = new Date(new Date().setHours(0, 0, 0, 0));
   let todayBattles = data0.data.battles.filter((battle) => {
     return date.isSameDay(today, new Date(battle.created_date));
@@ -113,7 +113,7 @@ const getBattlesResult = (data0, username) => {
     winRate: ((winCount * 100) / (todayBattles.length - drawCount)).toFixed(2),
     lastest: ta.ago(new Date(todayBattles[0].created_date)),
   };
-};
+}; */
 
 const getBalance = (data2) => {
   if (!data2) {
@@ -175,40 +175,34 @@ const checkInfo = async (userList) => {
   });
   let result = [];
   for (const username of userList) {
-    await new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        //console.log("Getting data of user: %s", username);
-        let battleResult;
-        let balance;
-        let details;
-        let quest;
-        let reward;
-        let lastestQuest;
-        let afk;
-        await getInfo(username, (result) => {
-          battleResult = getBattlesResult(result[0], username);
-          balance = getBalance(result[1]);
-          details = getDetails(result[2]);
-        });
-
-        let data = {
-          ...{
-            username: username,
-            balance: balance,
-            quest: quest,
-          },
-          ...details,
-          ...battleResult,
-          ...reward,
-          lastestQuest,
-          afk,
-        };
-        result.push(data);
-
-        resolve();
-        // console.log("Done: %s", username);
-      }, 500);
+    //console.log("Getting data of user: %s", username);
+    let battleResult;
+    let balance;
+    let details;
+    let quest;
+    let reward;
+    let lastestQuest;
+    let afk;
+    await getInfo(username, (result) => {
+      balance = getBalance(result[1]);
+      details = getDetails(result[2]);
     });
+
+    let data = {
+      ...{
+        username: username,
+        balance: balance,
+        quest: quest,
+      },
+      ...details,
+      ...battleResult,
+      ...reward,
+      lastestQuest,
+      afk,
+    };
+    result.push(data);
+
+    // console.log("Done: %s", username);
   }
   let filter = process.argv[2];
   let i = 9;

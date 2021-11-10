@@ -61,16 +61,6 @@ function App() {
         Header: "Power",
         accessor: "power",
       },
-
-      {
-        Header: "Win Rate",
-        accessor: "winrate",
-      },
-
-      {
-        Header: "Lastest game",
-        accessor: "lastgame",
-      },
     ],
     []
   );
@@ -168,8 +158,6 @@ function App() {
         erc: ele[2],
         rating: ele[3],
         power: ele[4],
-        winrate: ele[9],
-        lastgame: ele[11],
       };
     });
 
