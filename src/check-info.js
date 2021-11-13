@@ -22,7 +22,7 @@ const getInfo = async (username, callback) => {
       username.toLowerCase()
   ); */
   const req5 = axios.get(
-    "http://api.splinterlands.com/players/details?name=" +
+    "http://api2.splinterlands.com/players/details?name=" +
       username.toLowerCase()
   );
   /* const req6 = axios.get(
@@ -125,7 +125,16 @@ const getBalance = (data2) => {
   }
   return 0;
 };
-
+const getECR = (data2) => {
+  if (!data2) {
+    return {};
+  }
+  let result = data2.data.find((item) => item.token === "ECR");
+  if (result) {
+    return result.balance;
+  }
+  return 0;
+};
 const getQuest = (data3) => {
   if (data3) {
     let quest = data3.data[0];
@@ -146,7 +155,6 @@ const getDetails = (data4) => {
     return {};
   }
   return {
-    erc: data4.data.capture_rate / 100,
     rating: data4.data.rating,
     power: data4.data.collection_power,
   };
@@ -178,6 +186,7 @@ const checkInfo = async (userList) => {
     //console.log("Getting data of user: %s", username);
     let battleResult;
     let balance;
+    let erc;
     let details;
     let quest;
     let reward;
@@ -185,6 +194,7 @@ const checkInfo = async (userList) => {
     let afk;
     await getInfo(username, (result) => {
       balance = getBalance(result[0]);
+      erc = getECR(result[0]);
       details = getDetails(result[1]);
     });
 
@@ -193,7 +203,9 @@ const checkInfo = async (userList) => {
         username: username,
         balance: balance,
         quest: quest,
+        erc: erc,
       },
+
       ...details,
       ...battleResult,
       ...reward,
@@ -201,7 +213,6 @@ const checkInfo = async (userList) => {
       afk,
     };
     result.push(data);
-
     // console.log("Done: %s", username);
   }
   let filter = process.argv[2];
