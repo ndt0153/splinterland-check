@@ -14,7 +14,7 @@ const getInfo = async (username, callback) => {
       username
   ); */
   const req3 = axios.get(
-    "https://api.splinterlands.io/players/balances?username=" +
+    "https://game-api.splinterlands.io/players/balances?username=" +
       username.toLowerCase()
   );
   /*  const req4 = axios.get(
@@ -22,7 +22,7 @@ const getInfo = async (username, callback) => {
       username.toLowerCase()
   ); */
   const req5 = axios.get(
-    "http://api2.splinterlands.com/players/details?name=" +
+    "https://game-api.splinterlands.io/players/details?name=" +
       username.toLowerCase()
   );
   /* const req6 = axios.get(
