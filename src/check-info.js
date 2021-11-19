@@ -135,6 +135,16 @@ const getECR = (data2) => {
   }
   return 0;
 };
+const getECRLastDate = (data2) => {
+  if (!data2) {
+    return {};
+  }
+  let result = data2.data.find((item) => item.token === "ECR");
+  if (result) {
+    return result.last_reward_time;
+  }
+  return 0;
+};
 const getQuest = (data3) => {
   if (data3) {
     let quest = data3.data[0];
@@ -186,18 +196,24 @@ const checkInfo = async (userList) => {
     //console.log("Getting data of user: %s", username);
     let battleResult;
     let balance;
-    let erc;
+    let rawErc;
+    let last_date;
     let details;
     let quest;
     let reward;
     let lastestQuest;
     let afk;
+    // eslint-disable-next-line no-loop-func
     await getInfo(username, (result) => {
       balance = getBalance(result[0]);
-      erc = getECR(result[0]);
+      rawErc = getECR(result[0]);
       details = getDetails(result[1]);
+      last_date = getECRLastDate(result[0]);
     });
-
+    const diffTime = Math.abs(new Date(last_date) - new Date()),
+      erc2 =
+        ((diffTime - (diffTime % 3600000)) / 3600000) * 1.04 + rawErc / 100;
+    let erc = parseFloat(erc2).toFixed(2);
     let data = {
       ...{
         username: username,
