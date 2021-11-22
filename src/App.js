@@ -8,7 +8,7 @@ import { main } from "./check-info";
 import Table from "./table";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-
+import NewTable from "./newTable";
 function App() {
   const url = "http://localhost:2000";
   const [loading, setLoading] = useState(false);
@@ -26,6 +26,7 @@ function App() {
   const [checked, setChecked] = useState([]);
   const [newAcc, setNewAcc] = useState([]);
   const [tempAcc, setTempAcc] = useState("");
+  const [haveData, setHaveData] = useState(false);
   const option = [{ value: "nhom1", label: "Nhóm 1" }];
   const getDECPrice = async () => {
     let result = await axios.get(
@@ -114,6 +115,7 @@ function App() {
     }
     setChecked(arr);
   };
+
   const handleSelect = async (e) => {
     if (e.target.value === "all") {
       setData(temp);
@@ -123,13 +125,13 @@ function App() {
       setData([]);
       setFilter(e.target.value);
     } else {
-      console.log(e.target.value);
       setLoading(true);
       setFilter(e.target.value);
+      setData([]);
       let data = await getDataFromClient(e.target.value);
-      setData(data);
-
-      setLoading(false);
+      if (data) {
+        setLoading(false);
+      }
       /* const newData = temp.filter(function (el) {
         return el.group === e.target.value;
       });
@@ -137,6 +139,19 @@ function App() {
       setData(newData); */
     }
   };
+  const totalFromlist = async (data) => {
+    let total = 0;
+    data.forEach((data2, index) => {
+      total += parseInt(data2[2]);
+    });
+    return setDEC(total);
+  };
+  function calTotalDEC(result) {
+    setDEC(result);
+  }
+  function calTotalPower(result) {
+    setPower(result);
+  }
   const getUsersList = async (filter) => {
     /* const mongo = await app.logIn(Realm.Credentials.anonymous());
     const client = app.currentUser.mongoClient("mongodb-atlas");
@@ -163,24 +178,19 @@ function App() {
 
     return result;
   };
-  const totalFromlist = async (data) => {
-    let total = 0;
-    let countList = 0;
-    data.forEach((data2, index) => {
-      total += parseInt(data2[1]);
-      countList++;
-    });
-    setAcc(countList);
-    return total;
-  };
+
   const getDataFromClient = async (filter) => {
     const groupUser = await getUsersList(filter);
-    const tableData = await main(groupUser);
-    const totalDec = await totalFromlist(tableData);
-    const results = await getData2(tableData);
-    setDEC(totalDec);
+    for (let user of groupUser) {
+      let result = await main(user);
+      const results = await getData2(result);
+      setData((old) => [...old, ...results]);
 
-    return results;
+      setHaveData(true);
+    }
+    // const tableData = await main(groupUser);
+
+    return true;
   };
   const fetchData = async () => {
     const userList = await axios.get(`${url}/b`);
@@ -201,13 +211,18 @@ function App() {
     setPower(totalPower.data.total);
   };
   //const data2 = React.useMemo(() => fetchData(), []);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return (
     <div className="container mx-auto">
       <div className="grid grid-cols-4 gap-4 text-center my-8  items-center">
         <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg py-8">
           <p className="text-sm text-gray-500">Total Acc</p>
-          <h1 className="text-4xl text-green-500">{acc}</h1>
+          <h1 className="text-4xl text-green-500">
+            {haveData ? data.length : acc}
+          </h1>
         </div>
         <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg py-8">
           <p className="text-sm text-gray-500">Total DEC</p>
@@ -390,11 +405,17 @@ function App() {
           )}
         </div>
       </div>
-      <Table
+      {/* <Table
         data={data}
         columns={columns}
         pageCount={pageCount}
         fetchData={fetchData}
+      /> */}
+      <NewTable
+        data={data}
+        haveData={haveData}
+        passValue={calTotalDEC}
+        passPower={calTotalPower}
       />
     </div>
   );

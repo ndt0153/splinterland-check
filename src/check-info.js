@@ -169,7 +169,7 @@ const getDetails = (data4) => {
     power: data4.data.collection_power,
   };
 };
-const checkInfo = async (userList) => {
+const checkInfo = async (username) => {
   const table = new Table({
     style: { head: ["green"] },
     head: [
@@ -192,45 +192,44 @@ const checkInfo = async (userList) => {
     ],
   });
   let result = [];
-  for (const username of userList) {
-    //console.log("Getting data of user: %s", username);
-    let battleResult;
-    let balance;
-    let rawErc;
-    let last_date;
-    let details;
-    let quest;
-    let reward;
-    let lastestQuest;
-    let afk;
-    // eslint-disable-next-line no-loop-func
-    await getInfo(username, (result) => {
-      balance = getBalance(result[0]);
-      rawErc = getECR(result[0]);
-      details = getDetails(result[1]);
-      last_date = getECRLastDate(result[0]);
-    });
-    const diffTime = Math.abs(new Date(last_date) - new Date()),
-      erc2 =
-        ((diffTime - (diffTime % 3600000)) / 3600000) * 1.04 + rawErc / 100;
-    let erc = parseFloat(erc2).toFixed(2);
-    let data = {
-      ...{
-        username: username,
-        balance: balance,
-        quest: quest,
-        erc: erc,
-      },
 
-      ...details,
-      ...battleResult,
-      ...reward,
-      lastestQuest,
-      afk,
-    };
-    result.push(data);
-    // console.log("Done: %s", username);
-  }
+  //console.log("Getting data of user: %s", username);
+  let battleResult;
+  let balance;
+  let rawErc;
+  let last_date;
+  let details;
+  let quest;
+  let reward;
+  let lastestQuest;
+  let afk;
+  // eslint-disable-next-line no-loop-func
+  await getInfo(username, (result) => {
+    balance = getBalance(result[0]);
+    rawErc = getECR(result[0]);
+    details = getDetails(result[1]);
+    last_date = getECRLastDate(result[0]);
+  });
+  const diffTime = Math.abs(new Date(last_date) - new Date()),
+    erc2 = ((diffTime - (diffTime % 3600000)) / 3600000) * 1.04 + rawErc / 100;
+  let erc = parseFloat(erc2).toFixed(2);
+  let data = {
+    ...{
+      username: username,
+      balance: balance,
+      quest: quest,
+      erc: erc,
+    },
+
+    ...details,
+    ...battleResult,
+    ...reward,
+    lastestQuest,
+    afk,
+  };
+  result.push(data);
+  // console.log("Done: %s", username);
+
   let filter = process.argv[2];
   let i = 9;
   if (filter === "username") {
