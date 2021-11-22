@@ -9,7 +9,7 @@ export default function NewTable(props) {
       power += d.power;
     });
     if (props.haveData) {
-      props.passValue(result);
+      props.passValue(parseFloat(result).toFixed(2));
       props.passPower(power);
     }
   };
