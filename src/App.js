@@ -241,6 +241,7 @@ function App() {
         <div className="flex flex-row">
           <div>
             <select value={filter} onChange={handleSelect}>
+              <option value="none">None</option>
               {group
                 ? group.map((item) => (
                     <option value={item.name}>{item.name}</option>
